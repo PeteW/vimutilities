@@ -1,0 +1,50 @@
+execute pathogen#infect()
+execute pathogen#helptags()
+" GENERAL SETTINGS {
+    syntax on
+    filetype plugin indent on
+    augroup myvimrc
+            au!
+            au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
+    augroup END
+    set ruler
+    set rnu
+    set nu
+    colorscheme delek
+    "use xserver and remap ctrl-c to copy to host clipboard... in order for this to work you need to install epel and possibly xeyes
+    vmap <C-c> :<Esc>`>a<CR><Esc>mx`<i<CR><Esc>my'xk$v'y!xclip -selection c<CR>u
+    "K splits lines for me, or the opposite of J. K = i + <CR> + <Esc>
+    :nnoremap K i<CR><Esc>
+    set expandtab " I want to use spaces when I hit the tab key
+    set tabstop=4 " I want tabs to be 4 spaces 
+    set shiftwidth=4 " I want indentation to be 4 spaces 
+    set hidden "allows you to switch between buffers without requiring saving
+    let g:jsx_ext_required = 0 "add jsx highlighting to js files
+" }
+" DBEXT SETTINGS {
+    let g:dbext_default_buffer_lines=15
+    let g:dbext_default_profile_psql = 'type=pgsql:dbname=dev'
+    let g:dbext_default_profile = 'psql'
+" }
+" AIRLINE (need to install custom fonts for full effect) {
+    set laststatus=2
+    let g:airline_left_sep = '⮀'
+    let g:airline_left_alt_sep = '⮁'
+    let g:airline_right_sep = '⮂'
+    let g:airline_right_alt_sep = '⮃'
+    let g:airline_branch_prefix = '⭠'
+    let g:airline_readonly_symbol = '⭤'
+    let g:airline_linecolumn_prefix = '⭡'
+    set t_Co=256
+    let g:airline_powerline_fonts = 1
+    let g:airline_theme='laederon'
+    set guifont=Fira\ Mono\ Medium\ for\ Powerline:h9
+    set encoding=utf-8
+" }
+" SYNTASTIC (need to install pylint) {
+    let g:syntastic_always_populate_loc_list = 0
+    let g:syntastic_auto_loc_list = 0
+    let g:syntastic_check_on_open = 1
+    let g:syntastic_check_on_wq = 0
+    let g:syntastic_enable_highlighting=0
+" }
