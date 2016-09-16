@@ -1,12 +1,33 @@
 execute pathogen#infect()
 execute pathogen#helptags()
-
+" BOOTSTRAP BY EMPLOYING PATHOGEN
+" 
+" LINUX: 
+"   curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
+"   mkdir ~/.vim/bundle
+"   git clone into the new directory
+" WINDOWS: 
+"   copy https://raw.githubusercontent.com/tpope/vim-pathogen/master/autoload/pathogen.vim to c:\program files (x86)\vim\vim74\autoload\
+"   make folder c:\program files (x86)\vim\vim74\bundle
+"   git clone in to the folder
+"
+" CONFIG DIALED IN FOR FOLLOWING PLUGINS:
+" git clone https://github.com/vim-airline/vim-airline.git
+" git clone https://github.com/vim-airline/vim-airline-themes.git
+" git clone https://github.com/scrooloose/syntastic.git
+" git clone git://github.com/tpope/vim-fugitive.git
+" git clone https://github.com/davidhalter/jedi-vim.git
+" git clone https://github.com/kien/ctrlp.vim.git
+" git clone https://github.com/dbarsam/vim-vimtweak.git (windows only)
 " WINDOWS GVIM OPTIONS {
     set nocompatible
     set nocp
     filetype plugin on
     source $VIMRUNTIME/vimrc_example.vim
     source $VIMRUNTIME/mswin.vim
+    set guioptions=T
+    set guioptions=m
+    set guioptions=r
     behave mswin
     set backup
     set backupdir=C:\WINDOWS\Temp
@@ -16,7 +37,7 @@ execute pathogen#helptags()
     set undodir=C:\WINDOWS\Temp
 " }
 " GENERAL SETTINGS {
-    colorscheme crystal
+    colorscheme cyberpunk
     set tabstop=4
     set expandtab
     set rnu
@@ -57,7 +78,9 @@ execute pathogen#helptags()
 " SQLUFORMATTER {
 vmap <leader>sqf :SQLUFormatter
 " }
-
+" VIMTWEAK {
+    let g:vimtweak_focus_transparency_gained_value=30
+" }
 " OMNISHARP {
 " Get Code Issues and syntax errors
 " If you are using the omnisharp-roslyn backend, use the following
@@ -102,3 +125,4 @@ augroup omnisharp_commands
 
 augroup END
 " }
+
