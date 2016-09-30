@@ -35,6 +35,11 @@ execute pathogen#helptags()
     set shiftwidth=4 " I want indentation to be 4 spaces 
     set hidden "allows you to switch between buffers without requiring saving
     let g:jsx_ext_required = 0 "add jsx highlighting to js files
+    set foldmethod=indent   
+    set foldnestmax=10
+    set nofoldenable
+    set foldlevel=2
+    nnoremap <Space> za
 " }
 " DBEXT SETTINGS {
     let g:dbext_default_buffer_lines=15

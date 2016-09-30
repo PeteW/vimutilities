@@ -36,6 +36,11 @@ execute pathogen#helptags()
     set directory=C:\WINDOWS\Temp
     set writebackup
     set undodir=C:\WINDOWS\Temp
+    set foldmethod=indent   
+    set foldnestmax=10
+    set nofoldenable
+    set foldlevel=2
+    nnoremap <Space> za
 " }
 " GENERAL SETTINGS {
     colorscheme cyberpunk
