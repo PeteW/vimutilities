@@ -1,34 +1,9 @@
-execute pathogen#infect()
-execute pathogen#helptags()
-" BOOTSTRAP BY EMPLOYING PATHOGEN
-" 
-" LINUX: 
-"   curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-"   mkdir ~/.vim/bundle
-"   git clone into the new directory
-" WINDOWS: 
-"   copy https://raw.githubusercontent.com/tpope/vim-pathogen/master/autoload/pathogen.vim to c:\program files (x86)\vim\vim74\autoload\
-"   make folder c:\program files (x86)\vim\vim74\bundle
-"   git clone in to the folder
-"
-" CONFIG DIALED IN FOR FOLLOWING PLUGINS:
-" git clone https://github.com/vim-airline/vim-airline.git
-" git clone https://github.com/vim-airline/vim-airline-themes.git
-" git clone https://github.com/scrooloose/syntastic.git
-" git clone git://github.com/tpope/vim-fugitive.git
-" git clone https://github.com/davidhalter/jedi-vim.git
-" git clone https://github.com/kien/ctrlp.vim.git
-" git clone https://github.com/vim-scripts/dbext.vim.git
-" git clone https://github.com/dbarsam/vim-vimtweak.git (windows only)
 " WINDOWS GVIM OPTIONS {
     set nocompatible
     set nocp
     filetype plugin on
     source $VIMRUNTIME/vimrc_example.vim
     source $VIMRUNTIME/mswin.vim
-    set guioptions=T
-    set guioptions=m
-    set guioptions=r
     behave mswin
     set backup
     set backupdir=C:\WINDOWS\Temp
@@ -36,26 +11,32 @@ execute pathogen#helptags()
     set directory=C:\WINDOWS\Temp
     set writebackup
     set undodir=C:\WINDOWS\Temp
-    set foldmethod=indent   
+    set vb t_vb=
+    set grepprg=ack\ --nogroup\ $* "Use ack instead of grep
+    set grepformat=%f:%l:%c:%m
+    set foldmethod=indent
     set foldnestmax=10
     set nofoldenable
     set foldlevel=2
     nnoremap <Space> za
 " }
-" GENERAL SETTINGS {
-    colorscheme cyberpunk
+execute pathogen#infect()
+" GENERAL {
+    colorscheme molokai
     set tabstop=4
     set expandtab
-    set rnu
     set nu
     set shiftwidth=4
     :set guioptions-=T  "remove toolbar
+    :set guioptions-=m  "remove menubar
+    :set guioptions-=r  "remove right-hand scroll bar
     vnoremap <Leader>rp <cr><esc>
-    "K splits lines for me, or the opposite of J. K = i + <CR> + <Esc>
-    :nnoremap K i<CR><Esc>
     let g:Perl_Perl = 'C:\Perl64\bin\perl.exe' "need to install 32 bit DWIM Perl to ensure VIM recognized perl support
     set hidden "allows you to switch between buffers without requiring saving
     au BufRead,BufNewFile *.cshtml setfiletype html
+" }
+" VIMTWEAK (need to clone the vimtweak repo and copy the dll to bin){
+    let g:vimtweak_focus_transparency_gained_value = 30
 " }
 " AIRLINE (need to install custom fonts for full effect) {
     set laststatus=2
@@ -70,12 +51,17 @@ execute pathogen#helptags()
     let g:airline_powerline_fonts = 1
     let g:airline_theme='laederon'
     set encoding=utf-8
-    set guifont=Inconsolata-dz\ for\ Powerline:h13
+    set guifont=Anonymice\ Powerline:h13:b
+    "set guifont=Sauce\ Code\ Powerline:h13
+    "set guifont=Inconsolata-dz\ for\ Powerline:h13
 " }
 " CTRLP
     let g:ctrlp_working_path_mode = 'r'
     let g:ctrlp_max_files=0
     let g:ctrlp_max_depth=40
+" }
+" JEDI {
+    let g:jedi#show_call_signatures = "2"
 " }
 " SYNTASTIC (need to install pylint) {
     let g:syntastic_python_checkers = ['pylint']
@@ -87,61 +73,167 @@ execute pathogen#helptags()
     let g:syntastic_cs_checkers = ['syntax', 'semantic', 'issues']
 " }
 " DBEXT {
+    let g:dbext_default_display_cmd_line = 0
     let g:dbext_default_buffer_lines=15
-    let g:dbext_default_profile_benchmarkingblue = 'type=pgsql:dbname=benchmarking:port=5439:user=pweissbrod_blue:host=benchmarking-blue.ciicjntcwxqv.us-east-1.redshift.amazonaws.com'
-    let g:dbext_default_profile_benchmarkinggreen = 'type=pgsql:dbname=dev:port=5439:user=pweissbrod_green:host=benchmarking-green.ciicjntcwxqv.us-east-1.redshift.amazonaws.com:extra=sslmode=allow'
-    let g:dbext_default_profile_benchmarkinggreenlab = 'type=pgsql:dbname=dev:port=5439:user=lab_green:host=benchmarking-green.ciicjntcwxqv.us-east-1.redshift.amazonaws.com'
     let g:dbext_default_profile_impala = 'type=ODBC:dsnname=impaladsn32'
     let g:dbext_default_profile = 'impala'
 " }
 " SQLUFORMATTER {
     vmap <leader>sqf :SQLUFormatter<cr>
 " }
-" VIMTWEAK {
-    let g:vimtweak_focus_transparency_gained_value=30
+" NERDTREE {
+    " open nerdtree automatically when vim starts up if no file specified
+    "autocmd StdinReadPre * let s:std_in=1
+    "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree c:\Projects | endif
+    "CTRL + n toggles nerdtree
+    map <C-n> :NERDTreeToggle<CR>
+    map <A-m> :NERDTreeFind<CR>
+
+    " returns true iff is NERDTree open/active
+    function! IsNTOpen()
+      return exists("t:NERDTreeBufName") && (bufwinnr(t:NERDTreeBufName) != -1)
+    endfunction
+
+    " calls NERDTreeFind iff NERDTree is active, current window contains a modifiable file, and we're not in vimdiff
+    function! SyncTree()
+      if &modifiable && IsNTOpen() && strlen(expand('%')) > 0 && !&diff
+        NERDTreeFind
+        wincmd p
+      endif
+    endfunction
+
+    autocmd BufEnter * call SyncTree()
 " }
-" OMNISHARP {
-" Get Code Issues and syntax errors
-" If you are using the omnisharp-roslyn backend, use the following
-" let g:syntastic_cs_checkers = ['code_checker']
-augroup omnisharp_commands
-    autocmd!
-
-    "Set autocomplete function to OmniSharp (if not using YouCompleteMe completion plugin)
-    autocmd FileType cs setlocal omnifunc=OmniSharp#Complete
-
-    " Synchronous build (blocks Vim)
-    "autocmd FileType cs nnoremap <F5> :wa!<cr>:OmniSharpBuild<cr>
-    " Builds can also run asynchronously with vim-dispatch installed
-    autocmd FileType cs nnoremap <leader>b :wa!<cr>:OmniSharpBuildAsync<cr>
-    " automatic syntax check on events (TextChanged requires Vim 7.4)
-    autocmd BufEnter,TextChanged,InsertLeave *.cs SyntasticCheck
-
-    " Automatically add new cs files to the nearest project on save
-    autocmd BufWritePost *.cs call OmniSharp#AddToProject()
-
-    "show type information automatically when the cursor stops moving
-    autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
-
-    "The following commands are contextual, based on the current cursor position.
-
-    autocmd FileType cs nnoremap gd :OmniSharpGotoDefinition<cr>
-    autocmd FileType cs nnoremap <leader>fi :OmniSharpFindImplementations<cr>
-    autocmd FileType cs nnoremap <leader>ft :OmniSharpFindType<cr>
-    autocmd FileType cs nnoremap <leader>fs :OmniSharpFindSymbol<cr>
-    autocmd FileType cs nnoremap <leader>fu :OmniSharpFindUsages<cr>
-    "finds members in the current buffer
-    autocmd FileType cs nnoremap <leader>fm :OmniSharpFindMembers<cr>
-    " cursor can be anywhere on the line containing an issue
-    autocmd FileType cs nnoremap <leader>x  :OmniSharpFixIssue<cr>
-    autocmd FileType cs nnoremap <leader>fx :OmniSharpFixUsings<cr>
-    autocmd FileType cs nnoremap <leader>tt :OmniSharpTypeLookup<cr>
-    autocmd FileType cs nnoremap <leader>dc :OmniSharpDocumentation<cr>
-    "navigate up by method/property/field
-    autocmd FileType cs nnoremap <C-K> :OmniSharpNavigateUp<cr>
-    "navigate down by method/property/field
-    autocmd FileType cs nnoremap <C-J> :OmniSharpNavigateDown<cr>
-
-augroup END
+" STARTIFY {
+     autocmd VimEnter *
+                    \   if !argc()
+                    \ |   Startify
+                    \ |   NERDTree c:\Projects
+                    \ |   wincmd w
+                    \ | endif
+     autocmd User Startified set buftype=
+     autocmd User Startified AirlineRefresh
 " }
+" Change the color scheme from a list of color scheme names.
+" Version 2010-09-12 from http://vim.wikia.com/wiki/VimTip341
+" Press key:
+"   F8                next scheme
+"   Shift-F8          previous scheme
+"   Alt-F8            random scheme
+" Set the list of color schemes used by the above (default is 'all'):
+"   :SetColors all              (all $VIMRUNTIME/colors/*.vim)
+"   :SetColors my               (names built into script)
+"   :SetColors blue slate ron   (these schemes)
+"   :SetColors                  (display current scheme names)
+" Set the current color scheme based on time of day:
+"   :SetColors now
+if v:version < 700 || exists('loaded_setcolors') || &cp
+  finish
+endif
+
+let loaded_setcolors = 1
+"let s:mycolors = ['slate', 'torte', 'darkblue', 'delek', 'murphy', 'elflord', 'pablo', 'koehler']  " colorscheme names that we use to set color
+let s:mycolors = []  " colorscheme names that we use to set color
+
+" Set list of color scheme names that we will use, except
+" argument 'now' actually changes the current color scheme.
+function! s:SetColors(args)
+  if len(a:args) == 0
+    echo 'Current color scheme names:'
+    let i = 0
+    while i < len(s:mycolors)
+      echo '  '.join(map(s:mycolors[i : i+4], 'printf("%-14s", v:val)'))
+      let i += 5
+    endwhile
+  elseif a:args == 'all'
+    let paths = split(globpath(&runtimepath, 'colors/*.vim'), "\n")
+    let s:mycolors = map(paths, 'fnamemodify(v:val, ":t:r")')
+    echo 'List of colors set from all installed color schemes'
+  elseif a:args == 'my'
+    let c1 = 'default elflord peachpuff desert256 breeze morning'
+    let c2 = 'darkblue gothic aqua earth black_angus relaxedgreen'
+    let c3 = 'darkblack freya motus impact less chocolateliquor'
+    let s:mycolors = split(c1.' '.c2.' '.c3)
+    echo 'List of colors set from built-in names'
+  elseif a:args == 'now'
+    call s:HourColor()
+  else
+    let s:mycolors = split(a:args)
+    echo 'List of colors set from argument (space-separated names)'
+  endif
+endfunction
+
+command! -nargs=* SetColors call s:SetColors('<args>')
+
+" Set next/previous/random (how = 1/-1/0) color from our list of colors.
+" The 'random' index is actually set from the current time in seconds.
+" Global (no 's:') so can easily call from command line.
+function! NextColor(how)
+  call s:NextColor(a:how, 1)
+endfunction
+
+" Helper function for NextColor(), allows echoing of the color name to be
+" disabled.
+function! s:NextColor(how, echo_color)
+  if len(s:mycolors) == 0
+    call s:SetColors('all')
+  endif
+  if exists('g:colors_name')
+    let current = index(s:mycolors, g:colors_name)
+  else
+    let current = -1
+  endif
+  let missing = []
+  let how = a:how
+  for i in range(len(s:mycolors))
+    if how == 0
+      let current = localtime() % len(s:mycolors)
+      let how = 1  " in case random color does not exist
+    else
+      let current += how
+      if !(0 <= current && current < len(s:mycolors))
+        let current = (how>0 ? 0 : len(s:mycolors)-1)
+      endif
+    endif
+    try
+      execute 'colorscheme '.s:mycolors[current]
+      break
+    catch /E185:/
+      call add(missing, s:mycolors[current])
+    endtry
+  endfor
+  redraw
+  if len(missing) > 0
+    echo 'Error: colorscheme not found:' join(missing)
+  endif
+  if (a:echo_color)
+    echo g:colors_name
+  endif
+endfunction
+
+nnoremap <F8> :call NextColor(1)<CR>
+nnoremap <S-F8> :call NextColor(-1)<CR>
+nnoremap <A-F8> :call NextColor(0)<CR>
+
+" Set color scheme according to current time of day.
+function! s:HourColor()
+  let hr = str2nr(strftime('%H'))
+  if hr <= 3
+    let i = 0
+  elseif hr <= 7
+    let i = 1
+  elseif hr <= 14
+    let i = 2
+  elseif hr <= 18
+    let i = 3
+  else
+    let i = 4
+  endif
+  let nowcolors = 'elflord morning desert evening pablo'
+  execute 'colorscheme '.split(nowcolors)[i]
+  redraw
+  echo g:colors_name
+endfunction
+
+
 

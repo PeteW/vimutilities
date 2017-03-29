@@ -1,20 +1,8 @@
+filetype off
 execute pathogen#infect()
-execute pathogen#helptags()
-" BOOTSTRAP BY EMPLOYING PATHOGEN
-" 
-" LINUX: 
-"   curl -LSso ~/.vim/autoload/pathogen.vim https://tpo.pe/pathogen.vim
-"   mkdir ~/.vim/bundle
-"   git clone into the new directory
-"
-" CONFIG DIALED IN FOR FOLLOWING PLUGINS:
-" git clone https://github.com/vim-airline/vim-airline.git
-" git clone https://github.com/vim-airline/vim-airline-themes.git
-" git clone https://github.com/scrooloose/syntastic.git
-" git clone git://github.com/tpope/vim-fugitive.git
-" git clone https://github.com/davidhalter/jedi-vim.git
-" git clone https://github.com/kien/ctrlp.vim.git
-" git clone https://github.com/vim-scripts/dbext.vim.git
+"execute pathogen#helptags()
+filetype plugin indent on
+syntax on
 " GENERAL SETTINGS {
     syntax on
     filetype plugin indent on
@@ -23,7 +11,6 @@ execute pathogen#helptags()
             au BufWritePost .vimrc,_vimrc,vimrc,.gvimrc,_gvimrc,gvimrc so $MYVIMRC | if has('gui_running') | so $MYGVIMRC | endif
     augroup END
     set ruler
-    set rnu
     set nu
     colorscheme delek
     "use xserver and remap ctrl-c to copy to host clipboard... in order for this to work you need to install epel and possibly xeyes
@@ -31,30 +18,28 @@ execute pathogen#helptags()
     "K splits lines for me, or the opposite of J. K = i + <CR> + <Esc>
     :nnoremap K i<CR><Esc>
     set expandtab " I want to use spaces when I hit the tab key
-    set tabstop=4 " I want tabs to be 4 spaces 
-    set shiftwidth=4 " I want indentation to be 4 spaces 
+    set tabstop=4 " I want tabs to be 4 spaces
+    set shiftwidth=4 " I want indentation to be 4 spaces
     set hidden "allows you to switch between buffers without requiring saving
     let g:jsx_ext_required = 0 "add jsx highlighting to js files
-    set foldmethod=indent   
-    set foldnestmax=10
-    set nofoldenable
-    set foldlevel=2
-    nnoremap <Space> za
 " }
 " DBEXT SETTINGS {
+    let g:dbext_default_display_cmd_line = 0
     let g:dbext_default_buffer_lines=15
-    let g:dbext_default_profile_psql = 'type=pgsql:dbname=dev'
-    let g:dbext_default_profile = 'psql'
+    let g:dbext_default_profile_psql = 'type=pgsql:dbname=dev:port=5439:user=sa:host=benchmarking.ciicjntcwxqv.us-east-1.redshift.amazonaws.com'
+    let g:dbext_default_profile_impala = 'type=MYSQL:MYSQL_bin=impala-shell'
+    let g:dbext_default_MYSQL_extra = '--quiet'
+    let g:dbext_default_profile = 'impala'
 " }
 " AIRLINE (need to install custom fonts for full effect) {
     set laststatus=2
-    let g:airline_left_sep = '⮀'
-    let g:airline_left_alt_sep = '⮁'
-    let g:airline_right_sep = '⮂'
-    let g:airline_right_alt_sep = '⮃'
-    let g:airline_branch_prefix = '⭠'
-    let g:airline_readonly_symbol = '⭤'
-    let g:airline_linecolumn_prefix = '⭡'
+    let g:airline_left_sep = '<U+2B80>'
+    let g:airline_left_alt_sep = '<U+2B81>'
+    let g:airline_right_sep = '<U+2B82>'
+    let g:airline_right_alt_sep = '<U+2B83>'
+    let g:airline_branch_prefix = '<U+2B60>'
+    let g:airline_readonly_symbol = '<U+2B64>'
+    let g:airline_linecolumn_prefix = '<U+2B61>'
     set t_Co=256
     let g:airline_powerline_fonts = 1
     let g:airline_theme='laederon'
@@ -68,3 +53,26 @@ execute pathogen#helptags()
     let g:syntastic_check_on_wq = 0
     let g:syntastic_enable_highlighting=0
 " }
+" NERDTREE {
+" open nerdtree automatically when vim starts up if no file specified
+    "autocmd StdinReadPre * let s:std_in=1
+    "autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+    "CTRL + n toggles nerdtree
+    map <C-n> :NERDTreeToggle<CR>
+" }
+" JEDI {
+" show call signatures in popup
+    let g:jedi#show_call_signatures=1
+" }
+" STARTIFY {
+    let g:startify_custom_header = map(split(system('fortune | cowsay'), '\n'), '" ". v:val')
+    autocmd VimEnter *
+        \   if !argc()
+        \ |   Startify
+        \ |   NERDTree
+        \ |   wincmd w
+        \ | endif
+    autocmd User Startified set buftype=
+    autocmd User Startified AirlineRefresh
+" }
+
